@@ -1,0 +1,149 @@
+[gd_scene load_steps=21 format=3 uid="uid://c6e4a20asspdt"]
+
+[ext_resource type="Script" path="res://Player/Player.gd" id="1_2rh1h"]
+[ext_resource type="Texture2D" uid="uid://b10dt57gnwck1" path="res://Assests/Ball and Chain Bot/idle.png" id="2_62sl4"]
+[ext_resource type="Texture2D" uid="uid://dm7lwuilp51hx" path="res://Assests/Ball and Chain Bot/run.png" id="3_4jygb"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a3piu"]
+radius = 15.0
+height = 48.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vewea"]
+atlas = ExtResource("2_62sl4")
+region = Rect2(0, 0, 126, 39)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4cqdh"]
+atlas = ExtResource("2_62sl4")
+region = Rect2(0, 39, 126, 39)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r5idj"]
+atlas = ExtResource("2_62sl4")
+region = Rect2(0, 78, 126, 39)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rwys8"]
+atlas = ExtResource("2_62sl4")
+region = Rect2(0, 117, 126, 39)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aercb"]
+atlas = ExtResource("2_62sl4")
+region = Rect2(0, 156, 126, 39)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0p8c5"]
+atlas = ExtResource("3_4jygb")
+region = Rect2(0, 0, 126, 39)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sspe2"]
+atlas = ExtResource("3_4jygb")
+region = Rect2(0, 39, 126, 39)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ysu4o"]
+atlas = ExtResource("3_4jygb")
+region = Rect2(0, 78, 126, 39)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3stn4"]
+atlas = ExtResource("3_4jygb")
+region = Rect2(0, 117, 126, 39)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vqlr4"]
+atlas = ExtResource("3_4jygb")
+region = Rect2(0, 156, 126, 39)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0y62e"]
+atlas = ExtResource("3_4jygb")
+region = Rect2(0, 195, 126, 39)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c74dy"]
+atlas = ExtResource("3_4jygb")
+region = Rect2(0, 234, 126, 39)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ikwxn"]
+atlas = ExtResource("3_4jygb")
+region = Rect2(0, 273, 126, 39)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_k6okj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vewea")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4cqdh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r5idj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rwys8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aercb")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0p8c5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sspe2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ysu4o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3stn4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vqlr4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0y62e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c74dy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ikwxn")
+}],
+"loop": true,
+"name": &"run",
+"speed": 10.0
+}]
+
+[sub_resource type="Gradient" id="Gradient_8uy6w"]
+colors = PackedColorArray(0.5, 0.5, 0.5, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_grkid"]
+gradient = SubResource("Gradient_8uy6w")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.149573, 0.162393)
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 2
+motion_mode = 1
+script = ExtResource("1_2rh1h")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_a3piu")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+texture_filter = 3
+position = Vector2(-4, -2)
+scale = Vector2(1.53205, 1.53205)
+sprite_frames = SubResource("SpriteFrames_k6okj")
+animation = &"run"
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+light_mask = 2
+visibility_layer = 2
+scale = Vector2(20, 20)
+range_item_cull_mask = 2
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_grkid")
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+visible = false

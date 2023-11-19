@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxtpjuyayvq43"]
+
+[ext_resource type="Texture2D" uid="uid://04vt0cwae6eg" path="res://Assests/bare.png" id="1_k2cdt"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0eknq"]
+
+[node name="Objective" type="Area2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_0eknq")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(3.99998, 2.99998)
+scale = Vector2(0.114187, 0.114187)
+texture = ExtResource("1_k2cdt")

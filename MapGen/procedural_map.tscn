@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bgns6gbo5ymrf"]
+
+[ext_resource type="TileSet" uid="uid://dpoff064o63rq" path="res://MapGen/TheTileSet.tres" id="1_i0igu"]
+[ext_resource type="Script" path="res://MapGen/procedural_map.gd" id="2_wwaa2"]
+
+[node name="proceduralMap" type="TileMap"]
+light_mask = 2
+visibility_layer = 2
+tile_set = ExtResource("1_i0igu")
+format = 2
+script = ExtResource("2_wwaa2")

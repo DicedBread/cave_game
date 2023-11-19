@@ -1,0 +1,57 @@
+[gd_scene load_steps=7 format=3 uid="uid://dfnkxglfebokp"]
+
+[ext_resource type="PackedScene" uid="uid://bgns6gbo5ymrf" path="res://MapGen/procedural_map.tscn" id="1_v8tgs"]
+[ext_resource type="PackedScene" uid="uid://c6e4a20asspdt" path="res://Player/Player.tscn" id="2_srte1"]
+[ext_resource type="PackedScene" uid="uid://colu8yx8x55fc" path="res://Weapon/Gun.tscn" id="4_3nps4"]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_3h2bs"]
+polygon = PackedVector2Array(48, 25, 17, 64, 60, 90, 94, 43)
+
+[sub_resource type="Gradient" id="Gradient_sqxlw"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_yww3j"]
+gradient = SubResource("Gradient_sqxlw")
+
+[node name="Node2D" type="Node2D"]
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+visible = false
+shadow_enabled = true
+shadow_item_cull_mask = 3
+height = 0.91
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+visible = false
+position = Vector2(137, -43)
+occluder = SubResource("OccluderPolygon2D_3h2bs")
+occluder_light_mask = 3
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+visible = false
+light_mask = 3
+visibility_layer = 3
+position = Vector2(184, 10)
+scale = Vector2(3.75, 3.75)
+range_item_cull_mask = 2
+shadow_enabled = true
+shadow_item_cull_mask = 2
+texture = SubResource("GradientTexture2D_yww3j")
+
+[node name="proceduralMap" parent="." instance=ExtResource("1_v8tgs")]
+
+[node name="Player" parent="." instance=ExtResource("2_srte1")]
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+
+[node name="GridContainer" type="GridContainer" parent="Player/Camera2D"]
+offset_left = -577.0
+offset_top = -325.0
+offset_right = -339.0
+offset_bottom = -105.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Player/Camera2D/GridContainer"]
+position = Vector2(99, 106)
+
+[node name="Gun" parent="Player" instance=ExtResource("4_3nps4")]
+damage = 60
+reloadTime = 0.085

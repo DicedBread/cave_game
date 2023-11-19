@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://d2d5i50odjwru"]
+
+[ext_resource type="Texture2D" uid="uid://04vt0cwae6eg" path="res://Assests/bare.png" id="1_ltesy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ewama"]
+radius = 28.0
+
+[node name="Objective" type="Area2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ewama")
+debug_color = Color(0.980392, 0, 0.396078, 0.419608)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.193772, 0.193772)
+texture = ExtResource("1_ltesy")
