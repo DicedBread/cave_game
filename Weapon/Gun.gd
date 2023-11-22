@@ -16,9 +16,6 @@ var reloadLock = false
 
 func _ready():
 	projectileSpawn = $ProjectileSpawn
-	print(projectileSpawn)
-	print($ProjectileSpawn)
-
 	pass # Replace with function body.
 
 

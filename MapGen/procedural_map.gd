@@ -9,7 +9,7 @@ var height
 var sc = 1
 
 const OBJECTIVE_DIST = 100
-var obj = preload("res://Objective.tscn")
+var obj = preload("res://MapGen/Objective.tscn")
 var objectives = []
 
 
@@ -25,6 +25,8 @@ var caveNoise:FastNoiseLite = FastNoiseLite.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+
+
 	get_tree().get_root().size_changed.connect(windowSizeUpdate)
 	windowSizeUpdate()
 	noiseParam()
@@ -59,15 +61,33 @@ func generateChunck(position:Vector2):
 			if(new > 0):
 				isWall = true
 				if(roundf(new * 10) == 0.0):
-					set_cell(0, pos, 1, Vector2(5, 7))
+					set_cell(0, pos, 1, getWallOrientation(pos))
 					continue
 			set_cell(0, pos, isWall, tile)
 
 
-func getWallOrientation(loc:Vector2):
-	# var wallOrNot = [1, 1, 1, 1]
-	# var tiles = get_neighbor_cell(0, loc)
-	pass
+func getWallOrientation(loc:Vector2) -> Vector2:
+	var wallOrNot = [
+	caveNoise.get_noise_2d(loc.x, loc.y - 1) < 0, #up
+	caveNoise.get_noise_2d(loc.x + 1, loc.y) < 0, #right
+	caveNoise.get_noise_2d(loc.x, loc.y + 1) < 0, #down
+	caveNoise.get_noise_2d(loc.x - 1, loc.y) < 0, #left
+	]
+	var wallOrNotStr = "".join(wallOrNot)
+	var dict = { #vile, vile, vile, vile
+		"truefalsefalsefalse" = Vector2(4, 6),
+		"falsetruefalsefalse" = Vector2(5, 4),
+		"falsefalsetruefalse" = Vector2(4, 7),
+		"falsefalsefalsetrue" = Vector2(6, 4),
+		"truetruefalsefalse" = Vector2(5, 6),
+		"falsetruetruefalse" = Vector2(5, 5),
+		"falsefalsetruetrue" = Vector2(6, 5),
+		"truefalsefalsetrue" = Vector2(6, 6),
+	}
+	if(dict.has(wallOrNotStr)):
+		return dict[wallOrNotStr]
+	return Vector2(1, 1)
+
 
 
 

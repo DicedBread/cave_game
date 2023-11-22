@@ -1,8 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://dfnkxglfebokp"]
+[gd_scene load_steps=10 format=3 uid="uid://dfnkxglfebokp"]
 
+[ext_resource type="Script" path="res://navMap.gd" id="1_s0jgx"]
 [ext_resource type="PackedScene" uid="uid://bgns6gbo5ymrf" path="res://MapGen/procedural_map.tscn" id="1_v8tgs"]
 [ext_resource type="PackedScene" uid="uid://c6e4a20asspdt" path="res://Player/Player.tscn" id="2_srte1"]
 [ext_resource type="PackedScene" uid="uid://colu8yx8x55fc" path="res://Weapon/Gun.tscn" id="4_3nps4"]
+[ext_resource type="PackedScene" uid="uid://cxtpjuyayvq43" path="res://MapGen/Objective.tscn" id="4_l6kdk"]
+[ext_resource type="PackedScene" uid="uid://dfjwkdyhmvyv4" path="res://Enemy/Enemy.tscn" id="5_3pdu1"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_3h2bs"]
 polygon = PackedVector2Array(48, 25, 17, 64, 60, 90, 94, 43)
@@ -13,6 +16,7 @@ polygon = PackedVector2Array(48, 25, 17, 64, 60, 90, 94, 43)
 gradient = SubResource("Gradient_sqxlw")
 
 [node name="Node2D" type="Node2D"]
+script = ExtResource("1_s0jgx")
 
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
 visible = false
@@ -55,3 +59,9 @@ position = Vector2(99, 106)
 [node name="Gun" parent="Player" instance=ExtResource("4_3nps4")]
 damage = 60
 reloadTime = 0.085
+
+[node name="Objective" parent="." instance=ExtResource("4_l6kdk")]
+position = Vector2(159, -29)
+
+[node name="Enemy" parent="." instance=ExtResource("5_3pdu1")]
+position = Vector2(-166, -90)
