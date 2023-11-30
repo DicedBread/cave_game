@@ -8,6 +8,7 @@ var width
 var height
 var sc = 1
 
+
 const OBJECTIVE_DIST = 100
 var obj = preload("res://MapGen/Objective.tscn")
 var objectives = []
@@ -15,24 +16,16 @@ var objectives = []
 
 var caveNoise:FastNoiseLite = FastNoiseLite.new()
 
-
-
-# @onready var mat = get_material()
-
 @onready var player = get_parent().get_node("Player")
-# @onready var im = get_parent().get_node("Player/Camera2D/GridContainer/Sprite2D")
-# @onready var objectiveNoise = FastNoiseLite.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-
-
 	get_tree().get_root().size_changed.connect(windowSizeUpdate)
 	windowSizeUpdate()
 	noiseParam()
 	createObjective()
-	# material.set_shader_parameter("playerLoc", player.position)
-	# im.set_texture(ImageTexture.create_from_image(caveNoise.get_image(500, 500)))
+	# caveNoise.set_seed(randi())
+
 
 func windowSizeUpdate():
 	win = get_viewport_rect().size
@@ -62,6 +55,8 @@ func generateChunck(position:Vector2):
 				isWall = true
 				if(roundf(new * 10) == 0.0):
 					set_cell(0, pos, 1, getWallOrientation(pos))
+					# set_cell(0, pos, 1, Vector2(0,0))
+
 					continue
 			set_cell(0, pos, isWall, tile)
 
@@ -134,3 +129,14 @@ func noiseParam():
 	caveNoise.set_fractal_ping_pong_strength(0.5)
 	caveNoise.set_fractal_weighted_strength(0.5)
 	caveNoise.set_frequency(0.03) 
+
+# func get_noise_along(v1:Vector2, v2:Vector2)->float:
+# 	var vec1 = local_to_map(v1)
+# 	var vec2 = local_to_map(v2)
+
+# 	var vec1 = 
+
+func getNoiseAt(vec:Vector2)->float:
+	var v = local_to_map(vec)
+	return caveNoise.get_noise_2d(v.x, v.y)
+

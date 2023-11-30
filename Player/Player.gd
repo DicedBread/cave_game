@@ -38,3 +38,6 @@ func animation():
 		sprite.play("run")
 	else:
 		sprite.play("idle")
+
+func damage(dm:int):
+	print("damage")

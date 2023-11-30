@@ -1,23 +1,31 @@
 [gd_scene load_steps=5 format=3 uid="uid://dfjwkdyhmvyv4"]
 
 [ext_resource type="Script" path="res://Enemy/Enemy.gd" id="1_d5hki"]
+[ext_resource type="SpriteFrames" uid="uid://dww7q3wgedn6q" path="res://Enemy/Sprites/OrangeSprite.tres" id="2_qdbfw"]
 
-[sub_resource type="Gradient" id="Gradient_ek3t5"]
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_m8dao"]
-gradient = SubResource("Gradient_ek3t5")
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n1dvd"]
+size = Vector2(22, 9)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2s3b0"]
 
-[node name="Enemy" type="CharacterBody2D"]
+[node name="Enemy" type="CharacterBody2D" groups=["Enemy"]]
+collision_layer = 3
+collision_mask = 3
 motion_mode = 1
 script = ExtResource("1_d5hki")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.28125, 0.28125)
-texture = SubResource("GradientTexture2D_m8dao")
+[node name="area" type="Area2D" parent="."]
+rotation = 0.158375
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="area"]
+position = Vector2(16, 0)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_n1dvd")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_2s3b0")
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 3
+sprite_frames = ExtResource("2_qdbfw")
+animation = &"walkNorth"

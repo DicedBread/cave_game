@@ -8,7 +8,7 @@ diffuse_texture = ExtResource("1_ud56a")
 [sub_resource type="CircleShape2D" id="CircleShape2D_0eknq"]
 radius = 31.9531
 
-[node name="Objective" type="Area2D"]
+[node name="Objective" type="StaticBody2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-6, -6)

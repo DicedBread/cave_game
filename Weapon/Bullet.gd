@@ -8,6 +8,8 @@ var pierce = 1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	connect("body_entered", Callable(body_entered))
+	connect("area_entered", Callable(area_entered))
 	# body_entered.connect(on_body_entered)
 	pass # Replace with function body.
 
@@ -44,6 +46,19 @@ func setDamage(newDamage):
 # 	pierce -= 1
 # 	if pierce <= 0:
 # 		queue_free()
+
+func body_entered(body):
+	if body.is_in_group("Enemy"):
+		body.damage(damage)
+		queue_free()
+		
+
+	if(body.is_in_group("Map")):
+		queue_free()
+	
+
+func area_entered(area):
+	pass
 
 func _on_timer_timeout():
 	queue_free()
