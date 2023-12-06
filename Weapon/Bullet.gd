@@ -49,7 +49,7 @@ func setDamage(newDamage):
 
 func body_entered(body):
 	if body.is_in_group("Enemy"):
-		body.damage(damage)
+		body.damage(damage, velocity)
 		queue_free()
 		
 

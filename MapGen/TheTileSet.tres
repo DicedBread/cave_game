@@ -1,8 +1,15 @@
-[gd_resource type="TileSet" load_steps=11 format=3 uid="uid://dpoff064o63rq"]
+[gd_resource type="TileSet" load_steps=12 format=3 uid="uid://dpoff064o63rq"]
 
 [ext_resource type="Texture2D" uid="uid://dykgdmhs3ju1b" path="res://Assests/Texture/TX Tileset Grass.png" id="1_m3upk"]
 [ext_resource type="Texture2D" uid="uid://hny5lhku2v41" path="res://Assests/Texture/TX Tileset Stone Ground.png" id="2_go223"]
 [ext_resource type="Texture2D" uid="uid://dti1fal4a2n6f" path="res://Assests/Texture/TX Tileset Stone Ground_NormalMap.png" id="3_gjn22"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_4ho1n"]
+vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)])
+source_geometry_group_name = &"navigation_polygon_source_group"
+agent_radius = 0.0
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_xuy8q"]
 diffuse_texture = ExtResource("1_m3upk")
@@ -35,6 +42,7 @@ use_texture_padding = false
 1:0/0 = 0
 1:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 1:0/0/physics_layer_0/angular_velocity = 0.0
+1:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_4ho1n")
 2:0/0 = 0
 2:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 2:0/0/physics_layer_0/angular_velocity = 0.0
@@ -1801,6 +1809,7 @@ use_texture_padding = false
 
 [resource]
 occlusion_layer_0/light_mask = 3
-physics_layer_0/collision_layer = 1
+physics_layer_0/collision_layer = 3
+navigation_layer_0/layers = 1
 sources/0 = SubResource("TileSetAtlasSource_volwe")
 sources/1 = SubResource("TileSetAtlasSource_jwr3h")

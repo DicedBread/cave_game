@@ -15,11 +15,11 @@ func _process(delta):
 func _input(event):
 	# if(fireMode != fireModes.MANUAL_AIM): pass;
 	if event is InputEventMouseButton:
-		if event.button_index == 1 and event.is_pressed():
+		if event.button_index == 2 and event.is_pressed():
 			var em = e.instantiate()
-			add_child(em)
 			em.global_position = get_global_mouse_position()
+			add_child(em)
 
-		elif event.button_index == 1 and not event.is_pressed():
+		elif event.button_index == 2 and not event.is_pressed():
 			pass
 			# triggerReleased()

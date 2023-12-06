@@ -1,31 +1,72 @@
-[gd_scene load_steps=5 format=3 uid="uid://dfjwkdyhmvyv4"]
+[gd_scene load_steps=7 format=3 uid="uid://dfjwkdyhmvyv4"]
 
 [ext_resource type="Script" path="res://Enemy/Enemy.gd" id="1_d5hki"]
+[ext_resource type="Texture2D" uid="uid://dio64q0awg5bb" path="res://Assests/sword.png" id="2_pq56a"]
 [ext_resource type="SpriteFrames" uid="uid://dww7q3wgedn6q" path="res://Enemy/Sprites/OrangeSprite.tres" id="2_qdbfw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n1dvd"]
-size = Vector2(22, 9)
+size = Vector2(34.553, 4)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2s3b0"]
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_x1fct"]
+particle_flag_disable_z = true
+inherit_velocity_ratio = 1.0
+direction = Vector3(0, 0, 0)
+spread = 5.041
+initial_velocity_min = 86.49
+initial_velocity_max = 1000.0
+gravity = Vector3(0, 0, 0)
+attractor_interaction_enabled = false
+scale_max = 5.0
+color = Color(1, 0, 0, 1)
+collision_mode = 2
+
 [node name="Enemy" type="CharacterBody2D" groups=["Enemy"]]
-collision_layer = 3
+collision_layer = 5
 collision_mask = 3
 motion_mode = 1
 script = ExtResource("1_d5hki")
 
-[node name="area" type="Area2D" parent="."]
-rotation = 0.158375
+[node name="Sword" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="area"]
-position = Vector2(16, 0)
-rotation = 1.5708
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sword"]
+position = Vector2(17, 0)
 shape = SubResource("RectangleShape2D_n1dvd")
 
+[node name="Sprite" type="Sprite2D" parent="Sword"]
+position = Vector2(17, 0)
+scale = Vector2(0.0172226, 0.0172226)
+texture = ExtResource("2_pq56a")
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("CircleShape2D_2s3b0")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 3
 sprite_frames = ExtResource("2_qdbfw")
-animation = &"walkNorth"
+animation = &"walkSouthEast"
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+collision_mask = 2
+
+[node name="Target" type="Line2D" parent="."]
+points = PackedVector2Array(0, 0, 0, 0)
+width = 3.0
+
+[node name="Vel" type="Line2D" parent="."]
+points = PackedVector2Array(0, 0, 0, 0)
+width = 5.0
+default_color = Color(0.968627, 0.376471, 0.298039, 1)
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+visible = false
+emitting = false
+amount = 215
+process_material = SubResource("ParticleProcessMaterial_x1fct")
