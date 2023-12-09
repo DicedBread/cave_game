@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://db6h6du5ev7dl"]
+
+[ext_resource type="Script" path="res://Main.cs" id="1_ygl7f"]
+[ext_resource type="PackedScene" uid="uid://dfnkxglfebokp" path="res://World.tscn" id="2_jdagf"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_ygl7f")
+
+[node name="World" parent="." instance=ExtResource("2_jdagf")]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 295.0
+offset_bottom = 179.0

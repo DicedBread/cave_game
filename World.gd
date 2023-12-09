@@ -68,7 +68,6 @@ func createPath(a1:Vector2, a2:Vector2)-> Array:
 	return path
 
 
-
 func noiseParam():
 	currentNoise.set_noise_type(FastNoiseLite.NoiseType.TYPE_PERLIN)
 	currentNoise.set_cellular_jitter(0.45)

@@ -10,12 +10,12 @@ var sc = 1
 
 var nav = tile_set.get_navigation_layer_layers(0)
 
+# const OBJECTIVE_DIST = 100
+# var obj = preload("res://MapGen/Objective.tscn")
+# var objectives = []
+@onready var heheh = 2
 
-const OBJECTIVE_DIST = 100
-var obj = preload("res://MapGen/Objective.tscn")
-var objectives = []
-
-
+@onready var noise = get_parent().WorldNoise
 
 @onready var player = get_parent().get_node("Player")
 
@@ -23,9 +23,10 @@ var objectives = []
 func _ready():
 	get_tree().get_root().size_changed.connect(windowSizeUpdate)
 	windowSizeUpdate()
+	print(noise)
 	# createObjective()
 	# caveNoise.set_seed(randi())
-
+	
 
 func windowSizeUpdate():
 	win = get_viewport_rect().size
@@ -47,7 +48,7 @@ func generateChunck(position:Vector2):
 			var pos = Vector2(tilePos.x + i - width/2, tilePos.y + j - height/2)
 			if(get_cell_tile_data(0, pos) != null): continue 
 			
-			var new = World.currentNoise.get_noise_2d(pos.x, pos.y)
+			var new = noise.get_noise_2d(pos.x, pos.y)
 			var isWall = false
 			var tile = Vector2(1, 1)
 			if(new > 0):
@@ -68,7 +69,7 @@ func genNavArea(p1:Vector2, size:Vector2):
 		for j in range(tileP1.y, tileP2.y):
 			var pos = Vector2(i, j)
 			# if(get_cell_tile_data(0, pos) != null): continue 
-			var new = World.currentNoise.get_noise_2d(pos.x, pos.y)
+			var new = noise.get_noise_2d(pos.x, pos.y)
 			var isWall = false
 			var tile = Vector2(1, 0)
 			if(new > 0):
@@ -78,10 +79,10 @@ func genNavArea(p1:Vector2, size:Vector2):
 
 func getWallOrientation(loc:Vector2) -> Vector2:
 	var wallOrNot = [
-		World.currentNoise.get_noise_2d(loc.x, loc.y - 1) < 0, #up
-		World.currentNoise.get_noise_2d(loc.x + 1, loc.y) < 0, #right
-		World.currentNoise.get_noise_2d(loc.x, loc.y + 1) < 0, #down
-		World.currentNoise.get_noise_2d(loc.x - 1, loc.y) < 0, #left
+		noise.get_noise_2d(loc.x, loc.y - 1) < 0, #up
+		noise.get_noise_2d(loc.x + 1, loc.y) < 0, #right
+		noise.get_noise_2d(loc.x, loc.y + 1) < 0, #down
+		noise.get_noise_2d(loc.x - 1, loc.y) < 0, #left
 	]
 	var wallOrNotStr = "".join(wallOrNot)
 	var dict = { #vile, vile, vile, vile
@@ -144,5 +145,5 @@ func getWallOrientation(loc:Vector2) -> Vector2:
 
 func getNoiseAt(vec:Vector2)->float:
 	var v = local_to_map(vec)
-	return World.currentNoise.get_noise_2d(v.x, v.y)
+	return noise.get_noise_2d(v.x, v.y)
 

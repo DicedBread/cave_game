@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://cxtpjuyayvq43"]
 
-[ext_resource type="Script" path="res://MapGen/Objective.gd" id="1_te6i4"]
+[ext_resource type="Script" path="res://MapGen/Objective.cs" id="1_kxk7e"]
 [ext_resource type="Texture2D" uid="uid://c1vpbnurklpt7" path="res://Assests/Texture/512x512 Crystals Transparent.png" id="1_ud56a"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_8ns0o"]
@@ -10,7 +10,7 @@ diffuse_texture = ExtResource("1_ud56a")
 radius = 31.9531
 
 [node name="Objective" type="StaticBody2D"]
-script = ExtResource("1_te6i4")
+script = ExtResource("1_kxk7e")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-6, -6)

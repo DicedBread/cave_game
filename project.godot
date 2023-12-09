@@ -11,14 +11,17 @@ config_version=5
 [application]
 
 config/name="CaveThing"
-run/main_scene="res://node_2d.tscn"
-config/features=PackedStringArray("4.2", "Forward Plus")
+run/main_scene="res://Main.tscn"
+config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Path="*res://Path/Path.gd"
-World="*res://World.gd"
+
+[dotnet]
+
+project/assembly_name="CaveThing"
 
 [file_customization]
 

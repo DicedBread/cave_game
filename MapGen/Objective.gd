@@ -1,6 +1,6 @@
 extends StaticBody2D
 
-@onready var player = get_tree().get_root().get_node("Node2D/Player")
+@onready var player = get_parent().get_node("Player")
 @onready var toolTip = $ToolTip
 
 @onready var startTimer = Timer.new() 
