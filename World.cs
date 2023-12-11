@@ -10,14 +10,19 @@ public partial class World : Node2D
     private const int OBJECTIVE_COUNT = 3;
     private ProceduralMap map;
 	private FastNoiseLite worldNoise;
-	// public FastNoiseLite WorldNoise {get {return worldNoise;} set{return;}}
+	public FastNoiseLite WorldNoise {get {return worldNoise;} set{return;}}
 	public int heheh = 1;
 	private CharacterBody2D player;
 	private PackedScene obj = GD.Load<PackedScene>("res://MapGen/Objective.tscn");
 	private Dictionary<Vector2, StaticBody2D> objectives = new Dictionary<Vector2, StaticBody2D>();
 
+
+
 	[Signal]
-	public delegate void noiseUpdateEventHandler(FastNoiseLite f);
+	public delegate void noiseUpdateEventHandler();
+
+	[Signal]
+	public delegate void setTargetEventHandler(Vector2 v); 
 
 
 	public override void _Ready()
@@ -25,8 +30,14 @@ public partial class World : Node2D
 		map = GetNode<ProceduralMap>("ProceduralMap");
 		worldNoise = new FastNoiseLite();
 		noiseParam(worldNoise);
+
 		player = GetNode<CharacterBody2D>("Player");
 		createObjectives();
+		Enemy e = GetNode<Enemy>("Enemy");
+		// new Callable(e, "SetTarget").CallDeferred(GetClosestTargetLocation(e.GlobalPosition));
+		e.SetTarget(GetClosestTargetLocation(e.GlobalPosition));
+		// Connect(SignalName.noiseUpdate, new Callable(e, "SetTarget"));
+		// EmitSignal(SignalName.noiseUpdate, GetClosestTargetLocation(e.GlobalPosition));
 	}
 	
 
@@ -36,19 +47,17 @@ public partial class World : Node2D
     }
 
     public void createObjectives(){
-		
+		// TODO stop duplicate pos
 		for(int i =0; i< OBJECTIVE_COUNT; i++){
 			StaticBody2D inst = obj.Instantiate<StaticBody2D>();
 			Random r = new Random();
 			Vector2I pos = getCoordInValidZone(r.Next(-OBJECTIVE_DIST, OBJECTIVE_DIST), r.Next(-OBJECTIVE_DIST, OBJECTIVE_DIST));
-			GD.Print(pos);
 			Vector2 worldPos = map.MapToLocal(pos);
 			inst.GlobalPosition = worldPos;
 			objectives.Add(worldPos, inst);
 			AddChild(inst);
-			GD.Print(inst.GlobalPosition);
-			// Vector2I v = new Vector2I(1000, 1000);
-			// map.Call("genNavArea", inst.GlobalPosition - (v/2), v);
+			Vector2I v = new Vector2I(1000, 1000);
+			map.genNavArea(inst.GlobalPosition, v, worldNoise);
 		}
 	}
 
@@ -94,9 +103,9 @@ public partial class World : Node2D
 				curDist = dist;	
 			}
 		}
+		
 		return curOut;
 	}
-
 
 	// set params for noise
 	public void noiseParam(FastNoiseLite noise){
@@ -111,7 +120,13 @@ public partial class World : Node2D
 		noise.Frequency = 0.03f;
 	}
 
-	
 
-	// public float getWorldNoise()
+	public void doThing(){
+		GD.Print(this);
+	}
+	
+	public float getWorldNoiseAt(Vector2 v){
+		return worldNoise.GetNoise2Dv(map.LocalToMap(v));
+	}
+
 }

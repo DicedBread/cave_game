@@ -18,6 +18,9 @@ public partial class Objective : StaticBody2D
 	enum State {IDLE, DEFEND}
 	State state = State.IDLE;
 
+	[Signal]
+	public delegate void DestroyedEventHandler(Vector2 pos);
+
 	public override void _Ready()
 	{
 		toolTip = GetNode<SplitContainer>("ToolTip");
@@ -56,6 +59,7 @@ public partial class Objective : StaticBody2D
 			}
 		}
 	}
+
 
 	private void startDefence(){
 		state = State.DEFEND;

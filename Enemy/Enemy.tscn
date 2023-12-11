@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://dfjwkdyhmvyv4"]
 
-[ext_resource type="Script" path="res://Enemy/Enemy.gd" id="1_d5hki"]
+[ext_resource type="Script" path="res://Enemy/Enemy.cs" id="1_llvwg"]
 [ext_resource type="Texture2D" uid="uid://dio64q0awg5bb" path="res://Assests/sword.png" id="2_pq56a"]
 [ext_resource type="SpriteFrames" uid="uid://dww7q3wgedn6q" path="res://Enemy/Sprites/OrangeSprite.tres" id="2_qdbfw"]
 
@@ -26,7 +26,7 @@ collision_mode = 2
 collision_layer = 5
 collision_mask = 3
 motion_mode = 1
-script = ExtResource("1_d5hki")
+script = ExtResource("1_llvwg")
 
 [node name="Sword" type="Area2D" parent="."]
 visible = false
@@ -58,13 +58,11 @@ animation = &"walkSouthEast"
 collision_mask = 2
 
 [node name="Target" type="Line2D" parent="."]
-visible = false
-points = PackedVector2Array(0, 0, 0, 0)
+points = PackedVector2Array(0, 0, 30, 0)
 width = 3.0
 
 [node name="Vel" type="Line2D" parent="."]
-visible = false
-points = PackedVector2Array(0, 0, 0, 0)
+points = PackedVector2Array(0, 0, 20, 0)
 width = 5.0
 default_color = Color(0.968627, 0.376471, 0.298039, 1)
 

@@ -6,6 +6,7 @@ public partial class ProceduralMap : TileMap
 {
 	private readonly Vector2I wall = new Vector2I(1, 1); 
 	private readonly Vector2I floor = new Vector2I(1, 1); 
+	private readonly Vector2I navFloor = new Vector2I(1, 0);
 
 
 	Vector2 winSize;
@@ -46,6 +47,24 @@ public partial class ProceduralMap : TileMap
 					SetCell(0, pos, 1, wall);
 				}else{
 					SetCell(0, pos, 0, floor);
+				}
+			}
+		}
+	}
+
+	
+	public void genNavArea(Vector2 center, Vector2 size, FastNoiseLite noise){
+		Vector2I tileP1 = LocalToMap(new Vector2I((int)(center.X - size.X/2), (int)(center.Y - size.Y/2)));
+		Vector2I tileP2 = LocalToMap(new Vector2I((int)(center.X + size.X/2), (int)(center.Y + size.Y/2)));
+		Vector2I pos;
+		for(int i = tileP1.X; i < tileP2.X; i++){
+			for(int j = tileP1.Y; j < tileP2.Y; j++){
+				pos = new Vector2I(i, j);
+				float noiseVal = noise.GetNoise2Dv(pos);
+				if(noiseVal > 0){
+					SetCell(0, pos, 1, wall);
+				}else{
+					SetCell(0, pos, 0, navFloor);
 				}
 			}
 		}
