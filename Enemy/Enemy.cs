@@ -6,6 +6,18 @@ public partial class Enemy : CharacterBody2D
 {
 	public const float Speed = 100.0f;
 
+	private static PackedScene scene = GD.Load<PackedScene>("res://Enemy/Enemy.tscn");
+
+	public static Enemy Instantiate(){
+		return scene.Instantiate<Enemy>();
+	}
+
+	public static Enemy Instantiate(Vector2 pos){
+		Enemy o = scene.Instantiate<Enemy>();
+		o.GlobalPosition = pos;
+		return o;
+	}
+
 	World world;
 
 	AnimatedSprite2D sprite;
@@ -20,7 +32,6 @@ public partial class Enemy : CharacterBody2D
 	enum State {WALKING, IDLE, TARGET, AVOID_WALL, FOLMOUSE}
 	State state = State.TARGET;
 
-	// Vector2 targetPos = new Vector2(1000,0);
 	Vector2 targetVel = new Vector2(1,0);
 
 	Line2D target;
@@ -40,15 +51,19 @@ public partial class Enemy : CharacterBody2D
 		sprite.SpriteFrames = (SpriteFrames) GD.Load(sprites[new Random().Next(0, sprites.Length)]);
 		Velocity = new Vector2(0, Speed);
 		
-		AddChild(rayLeft);
-		AddChild(rayRight);
+		// AddChild(rayLeft);
+		// AddChild(rayRight);
 
-		TargetObjectiveLoc = new Vector2(1, 1);
+		// TargetObjectiveLoc = new Vector2(1, 1);
+
+		new Callable(this, "SetUpNav").CallDeferred();
     }
 
     public override void _PhysicsProcess(double delta)
-	{
+	{	
 		ray.TargetPosition = GlobalPosition.DirectionTo(TargetObjectiveLoc) * GlobalPosition.DistanceTo(TargetObjectiveLoc); 
+		
+
 		target.SetPointPosition(1, targetVel);
 		vel.SetPointPosition(1, Velocity);	
 
@@ -64,9 +79,13 @@ public partial class Enemy : CharacterBody2D
 			case State.FOLMOUSE:
 				FollowMouse(delta);
 				break;
+			case State.AVOID_WALL:
+				AvoidWall(delta);
+				break;
 			default:
 				break;
 		}
+		Animation();
 		MoveAndSlide();
 	}
 
@@ -76,10 +95,10 @@ public partial class Enemy : CharacterBody2D
 			state = State.WALKING;
 			return;
 		}
-		// if(ray.GetCollisionPoint().DistanceTo(GlobalPosition) < 100){
-		// 	state = State.AVOID_WALL;
-		// 	return;
-		// }
+		if(ray.GetCollisionPoint().DistanceTo(GlobalPosition) < 100){
+			state = State.AVOID_WALL;
+			return;
+		}
 
 		Vector2 targetPos = navAgent.GetNextPathPosition();
 		targetVel = GlobalPosition.DirectionTo(targetPos) * Speed;
@@ -88,6 +107,10 @@ public partial class Enemy : CharacterBody2D
 		float targetAngle = targetVel.Angle();
 		float angle = Mathf.LerpAngle(currentAngle, targetAngle, 0.1f);
 		Velocity = Velocity.Rotated(angle - currentAngle);
+	}
+
+	public void AvoidWall(double delta){
+		Velocity = new Vector2(0, 0);
 	}
 
 	public void FollowMouse(double delta){
@@ -101,15 +124,48 @@ public partial class Enemy : CharacterBody2D
 	}
 
 
-	private async Task SetUpNav(Vector2 v){
+	private async void SetUpNav(){
 		await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
-		navAgent.TargetPosition = v;
+		Vector2 obj = world.GetClosestTargetLocation(GlobalPosition);
+		// Vector2 obj = GlobalPosition;
+		navAgent.TargetPosition = obj;
+		TargetObjectiveLoc = obj;
 	}
 
-	public async void SetTarget(Vector2 v){
+	public void SetTarget(Vector2 v){
+		// await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
 		TargetObjectiveLoc = v;
-		await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
-		navAgent.TargetPosition = v;
+		// GD.Print(TargetObjectiveLoc);
+		// GD.Print("setTar "+ navAgent.Name);
+	}
+
+
+	public void Animation(){
+		bool isNorth = Velocity.Y < 0;
+
+		float rot = Mathf.Abs(Mathf.RadToDeg(Velocity.Angle()));
+		if(rot < 45.0f){
+			sprite.Play("walkEast");
+			return;
+		}
+		if(rot > 135.0f){
+			sprite.Play("walkWest");
+		}
+
+		if(rot > 22.5f && rot < 67.5f){
+			String val = isNorth ? "walkNorthEast" : "walkSouthEast"; 
+			sprite.Play(val);
+		}
+
+		if(rot > 112.5f && rot < 157.5f){
+			String val = isNorth ? "walkNorthWest" : "walkSouthWest";
+			sprite.Play(val);
+		}
+
+		if(rot > 67.5 && rot < 112.5){
+			String val = isNorth ? "walkNorth" : "walkSouth";
+			sprite.Play(val);
+		} 
 
 	}
 

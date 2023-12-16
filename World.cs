@@ -17,7 +17,6 @@ public partial class World : Node2D
 	private Dictionary<Vector2, StaticBody2D> objectives = new Dictionary<Vector2, StaticBody2D>();
 
 
-
 	[Signal]
 	public delegate void noiseUpdateEventHandler();
 
@@ -33,16 +32,15 @@ public partial class World : Node2D
 
 		player = GetNode<CharacterBody2D>("Player");
 		createObjectives();
-		Enemy e = GetNode<Enemy>("Enemy");
+		// Enemy e = GetNode<Enemy>("Enemy");
 		// new Callable(e, "SetTarget").CallDeferred(GetClosestTargetLocation(e.GlobalPosition));
-		e.SetTarget(GetClosestTargetLocation(e.GlobalPosition));
+		// e.SetTarget(GetClosestTargetLocation(e.GlobalPosition));
 		// Connect(SignalName.noiseUpdate, new Callable(e, "SetTarget"));
 		// EmitSignal(SignalName.noiseUpdate, GetClosestTargetLocation(e.GlobalPosition));
 	}
 	
 
-    public override void _Process(double delta)
-    {
+    public override void _Process(double delta){
 		map.generateChunck(player.GlobalPosition, worldNoise);
     }
 
@@ -103,7 +101,6 @@ public partial class World : Node2D
 				curDist = dist;	
 			}
 		}
-		
 		return curOut;
 	}
 
@@ -121,10 +118,18 @@ public partial class World : Node2D
 	}
 
 
-	public void doThing(){
-		GD.Print(this);
-	}
 	
+	public override void _UnhandledInput(InputEvent @event){
+		if(@event is InputEventMouseButton e)
+			if(e.IsPressed() && e.ButtonIndex == MouseButton.Right){
+				Enemy em = Enemy.Instantiate();
+				em.GlobalPosition = GetGlobalMousePosition();
+				// em.SetTarget(GetClosestTargetLocation(em.GlobalPosition));
+				AddChild(em);
+			}
+	}
+
+
 	public float getWorldNoiseAt(Vector2 v){
 		return worldNoise.GetNoise2Dv(map.LocalToMap(v));
 	}
