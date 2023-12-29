@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://drssfuh2235o0"]
+
+[node name="TurrentPicker" type="TextureButton"]
+
+[node name="Buttons" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

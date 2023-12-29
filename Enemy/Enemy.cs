@@ -1,14 +1,17 @@
 using Godot;
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 public partial class Enemy : CharacterBody2D
 {
 	public const float Speed = 100.0f;
+	public float health = 100;
 
 	private static PackedScene scene = GD.Load<PackedScene>("res://Enemy/Enemy.tscn");
 
-	public static Enemy Instantiate(){
+	private Dictionary<Vector2, float> avoidWall = new Dictionary<Vector2, float>();
+
+	public static Enemy Instantiate(){	
 		return scene.Instantiate<Enemy>();
 	}
 
@@ -24,9 +27,9 @@ public partial class Enemy : CharacterBody2D
 	String[] sprites = {"res://Enemy/Sprites/BlackSprite.tres", "res://Enemy/Sprites/OrangeSprite.tres", "res://Enemy/Sprites/GreySprite.tres"};
 
 	NavigationAgent2D navAgent;
-	RayCast2D ray;
-	RayCast2D rayRight = new RayCast2D();
-	RayCast2D rayLeft= new RayCast2D();
+	RayCast2D targetRay;
+	// RayCast2D rayRight = new RayCast2D();
+	// RayCast2D rayLeft= new RayCast2D();
 
 
 	enum State {WALKING, IDLE, TARGET, AVOID_WALL, FOLMOUSE}
@@ -42,7 +45,7 @@ public partial class Enemy : CharacterBody2D
     public override async void _Ready(){
 		sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		navAgent = GetNode<NavigationAgent2D>("NavigationAgent2D");
-		ray = GetNode<RayCast2D>("RayCast2D");
+		targetRay = GetNode<RayCast2D>("TargetRay");
 		target = GetNode<Line2D>("Target");
 		vel = GetNode<Line2D>("Vel");
 
@@ -51,17 +54,14 @@ public partial class Enemy : CharacterBody2D
 		sprite.SpriteFrames = (SpriteFrames) GD.Load(sprites[new Random().Next(0, sprites.Length)]);
 		Velocity = new Vector2(0, Speed);
 		
-		// AddChild(rayLeft);
-		// AddChild(rayRight);
-
-		// TargetObjectiveLoc = new Vector2(1, 1);
+		AVReady();
 
 		new Callable(this, "SetUpNav").CallDeferred();
     }
 
     public override void _PhysicsProcess(double delta)
 	{	
-		ray.TargetPosition = GlobalPosition.DirectionTo(TargetObjectiveLoc) * GlobalPosition.DistanceTo(TargetObjectiveLoc); 
+		targetRay.TargetPosition = GlobalPosition.DirectionTo(TargetObjectiveLoc) * GlobalPosition.DistanceTo(TargetObjectiveLoc); 
 		
 
 		target.SetPointPosition(1, targetVel);
@@ -95,7 +95,7 @@ public partial class Enemy : CharacterBody2D
 			state = State.WALKING;
 			return;
 		}
-		if(ray.GetCollisionPoint().DistanceTo(GlobalPosition) < 100){
+		if(targetRay.GetCollisionPoint().DistanceTo(GlobalPosition) < 100){
 			state = State.AVOID_WALL;
 			return;
 		}
@@ -109,8 +109,65 @@ public partial class Enemy : CharacterBody2D
 		Velocity = Velocity.Rotated(angle - currentAngle);
 	}
 
+	RayCast2D scanner;
+	RayCast2D farTar;
+	float dist = 100;
+
+	private void AVReady(){
+		scanner = GetNode<RayCast2D>("Scanner");
+		farTar = GetNode<RayCast2D>("FarTar");
+		setUpAvWall();
+	}
+
+	public void setUpAvWall(){
+
+	}
+
 	public void AvoidWall(double delta){
-		Velocity = new Vector2(0, 0);
+		if(targetRay.GetCollisionPoint().DistanceTo(GlobalPosition) >= 100){
+			state = State.TARGET;
+		}
+
+		// Vector2 baseDir = GlobalPosition.DirectionTo(targetRay.TargetPosition).Normalized();
+		// float dist = targetRay.GetCollisionPoint().DistanceTo(GlobalPosition);
+		// Vector2 nDir = GlobalPosition.DirectionTo(targetRay.GetCollisionPoint());
+		// for(int i = 0; i < 90; i+=2){
+		// 	scanner.TargetPosition = baseDir.Rotated(Mathf.DegToRad(-(90/2) + i)) * 200;
+		// 	scanner.ForceRaycastUpdate();
+		// 	Vector2 v = scanner.GetCollisionPoint();
+		// 	float d = v.DistanceSquaredTo(GlobalPosition);
+		// 	if(d > dist){
+		// 		dist = d;
+		// 		nDir = GlobalPosition.DirectionTo(scanner.GetCollisionPoint());
+		// 	}
+		// }
+		// farTar.TargetPosition = nDir.Normalized() * 100;
+		// targetVel = nDir;
+
+		List<Vector2> vecLeft = new List<Vector2>();
+		List<Vector2> vecRight = new List<Vector2>();
+		
+		// scanner.TargetPosition = targetRay.TargetPosition.Rotated(Mathf.DegToRad(-45));
+		for(int i = 0; i < 5; i++){
+			float cuRot = 22.5f * i;
+			Vector2 vLeft = targetRay.TargetPosition.Normalized().Rotated(Mathf.DegToRad(cuRot));
+			Vector2 vRight = targetRay.TargetPosition.Normalized().Rotated(Mathf.DegToRad(-cuRot));
+
+			scanner.TargetPosition = vLeft;
+			scanner.ForceRaycastUpdate();
+			scanner.GetCollisionPoint();
+
+			
+		
+		
+		}
+
+
+
+		float currentAngle = Velocity.Angle();
+		float targetAngle = targetVel.Angle();
+		float angle = Mathf.LerpAngle(currentAngle, targetAngle, 0.1f);
+		Velocity = Velocity.Rotated(angle - currentAngle);
 	}
 
 	public void FollowMouse(double delta){
@@ -171,5 +228,9 @@ public partial class Enemy : CharacterBody2D
 
 	private float GetNoise2Dv(Vector2 v){
 		return world.getWorldNoiseAt(v);
+	}
+
+	public void damage(int dmg, Vector2 v){
+		health -= dmg;
 	}
 }

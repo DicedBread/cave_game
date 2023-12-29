@@ -21,4 +21,4 @@ damage = 20
 reloadTime = 0.085
 
 [node name="Turret" parent="." instance=ExtResource("5_1fe0b")]
-position = Vector2(52, -88)
+position = Vector2(68, -90)

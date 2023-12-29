@@ -15,6 +15,7 @@ public partial class Objective : StaticBody2D
 	private int health = 100;
 	private Timer timer = new Timer();
 
+
 	enum State {IDLE, DEFEND}
 	State state = State.IDLE;
 

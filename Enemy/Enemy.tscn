@@ -54,7 +54,7 @@ animation = &"walkSouthEast"
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 
-[node name="RayCast2D" type="RayCast2D" parent="."]
+[node name="TargetRay" type="RayCast2D" parent="."]
 collision_mask = 2
 
 [node name="Target" type="Line2D" parent="."]
@@ -71,3 +71,11 @@ visible = false
 emitting = false
 amount = 215
 process_material = SubResource("ParticleProcessMaterial_x1fct")
+
+[node name="Node" type="Node" parent="."]
+
+[node name="Scanner" type="RayCast2D" parent="."]
+collision_mask = 2
+
+[node name="FarTar" type="RayCast2D" parent="."]
+collision_mask = 2
