@@ -8,8 +8,8 @@ public partial class Turret : StaticBody2D
 	[Export(PropertyHint.Range, "1,200,")]
 	private float maxRange = 200;
 
-	[Export(PropertyHint.Range, "1, 50")]
-	private float fireRate = 20;
+	[Export(PropertyHint.Range, "0.1, 20")]
+	private float fireRate = 0.3f;
 
 	Area2D targetArea;
 	CollisionShape2D shape;
@@ -29,6 +29,9 @@ public partial class Turret : StaticBody2D
 		targetCir.Radius = maxRange;
 		ray = GetNode<RayCast2D>("RayCast2D");
 		timer.Timeout += Shoot;
+		timer.WaitTime = fireRate;
+		AddChild(timer);
+		timer.Start();
 	}
 
     public override void _PhysicsProcess(double delta){
@@ -51,8 +54,8 @@ public partial class Turret : StaticBody2D
 
 	public void Shoot(){
 		if(target == null) return;
-		
-		// Bullet
-
+		GD.Print("yep");
+		Bullet b = Bullet.Initialize(GlobalPosition, GlobalPosition.DirectionTo(target.GlobalPosition) * 1000);
+		GetParent().AddChild(b);
 	}
 }

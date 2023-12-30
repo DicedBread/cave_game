@@ -41,13 +41,13 @@ func _input(event):
 
 ##create single projectile moving in direction 
 func singleShot(direction:Vector2):
-	var shot = projectile.instantiate()
-	get_tree().root.add_child(shot)
-	shot.position = projectileSpawn.global_position
-	shot.setVelocity(direction * speed * 1000)
-	shot.setDamage(damage)
+	# var shot = projectile.instantiate()
+	# get_tree().root.add_child(shot)
+	# shot.position = projectileSpawn.global_position
+	# shot.setVelocity(direction * speed * 1000)
+	# shot.setDamage(damage)
 
-
+	pass
 
 ##Shoots in direction based on spread and shot count
 # func shoot(direction:Vector2):
