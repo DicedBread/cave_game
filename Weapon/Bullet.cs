@@ -24,6 +24,7 @@ public partial class Bullet : Area2D
     public override void _Ready()
 	{
 		initPos = GlobalPosition;
+		BodyEntered += Hit;
 	}
 
     public override void _PhysicsProcess(double delta){
@@ -31,6 +32,13 @@ public partial class Bullet : Area2D
 		if(Position.DistanceTo(initPos) > MaxTravelDist){
 			QueueFree();
 		}
-
     }
+
+	public void Hit(Node2D node){
+		if(node.IsInGroup("Enemy")){
+			Enemy e = (Enemy) node;
+			e.damage(10, velocity);
+		}
+	}
+
 }

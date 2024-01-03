@@ -11,6 +11,9 @@ public partial class Turret : StaticBody2D
 	[Export(PropertyHint.Range, "0.1, 20")]
 	private float fireRate = 0.3f;
 
+	[Export(PropertyHint.Range, "0, 360")]
+	private float spread = 0;
+
 	Area2D targetArea;
 	CollisionShape2D shape;
 	CircleShape2D targetCir;
@@ -19,7 +22,6 @@ public partial class Turret : StaticBody2D
 	Enemy target;
 
 	Timer timer = new Timer();
-
 
 	public override void _Ready(){
 		targetArea = GetNode<Area2D>("Target");
@@ -44,7 +46,7 @@ public partial class Turret : StaticBody2D
 	public void getClosestTar(Node2D b){
 		Enemy e = (Enemy) targetArea.GetOverlappingBodies().Where(e => e.IsInGroup("Enemy")).MaxBy(e => GlobalPosition.DistanceTo(e.GlobalPosition));
 		if(e == null){
-			target =null;
+			target = null;
 			return;
 		};
 		Vector2 v = GlobalPosition.DirectionTo(e.GlobalPosition) * GlobalPosition.DistanceTo(e.GlobalPosition);
@@ -54,7 +56,6 @@ public partial class Turret : StaticBody2D
 
 	public void Shoot(){
 		if(target == null) return;
-		GD.Print("yep");
 		Bullet b = Bullet.Initialize(GlobalPosition, GlobalPosition.DirectionTo(target.GlobalPosition) * 1000);
 		GetParent().AddChild(b);
 	}
