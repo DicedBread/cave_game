@@ -120,13 +120,21 @@ public partial class World : Node2D
 
 	
 	public override void _UnhandledInput(InputEvent @event){
-		if(@event is InputEventMouseButton e)
+		if(@event is InputEventMouseButton e){
+
 			if(e.IsPressed() && e.ButtonIndex == MouseButton.Right){
 				Enemy em = Enemy.Instantiate();
 				em.GlobalPosition = GetGlobalMousePosition();
 				// em.SetTarget(GetClosestTargetLocation(em.GlobalPosition));
 				AddChild(em);
 			}
+
+			if(e.IsPressed() && e.ButtonIndex == MouseButton.Left){
+				Turret t = Turret.Instantiate(GetGlobalMousePosition());
+				AddChild(t);
+			}		
+		}
+		
 	}
 
 

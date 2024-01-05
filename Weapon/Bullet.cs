@@ -5,7 +5,7 @@ public partial class Bullet : Area2D
 {
 	private static PackedScene scene = GD.Load<PackedScene>("res://Weapon/Bullet.tscn");
 	
-	public static Bullet Initialize(Vector2 location, Vector2 vel){
+	public static Bullet Instantiate(Vector2 location, Vector2 vel){
 		Bullet b = scene.Instantiate<Bullet>();
 		b.GlobalPosition = location;
 		b.velocity = vel;

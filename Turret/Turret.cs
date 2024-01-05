@@ -4,6 +4,13 @@ using System.Linq;
 
 public partial class Turret : StaticBody2D
 {
+	private static PackedScene scene = GD.Load<PackedScene>("res://Turret/Turret.tscn");
+
+	public static Turret Instantiate(Vector2 location){
+		Turret t = scene.Instantiate<Turret>();
+		t.GlobalPosition = location;
+		return t;
+	}
 
 	[Export(PropertyHint.Range, "1,200,")]
 	private float maxRange = 200;
@@ -56,7 +63,7 @@ public partial class Turret : StaticBody2D
 
 	public void Shoot(){
 		if(target == null) return;
-		Bullet b = Bullet.Initialize(GlobalPosition, GlobalPosition.DirectionTo(target.GlobalPosition) * 1000);
+		Bullet b = Bullet.Instantiate(GlobalPosition, GlobalPosition.DirectionTo(target.GlobalPosition) * 1000);
 		GetParent().AddChild(b);
 	}
 }
