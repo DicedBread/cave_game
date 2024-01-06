@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class Enemy : CharacterBody2D
 {
@@ -55,6 +56,8 @@ public partial class Enemy : CharacterBody2D
 		Velocity = new Vector2(0, Speed);
 		
 		AVReady();
+		setUp(ls);
+		setUp(ls2);
 
 		new Callable(this, "SetUpNav").CallDeferred();
     }
@@ -66,6 +69,7 @@ public partial class Enemy : CharacterBody2D
 
 		target.SetPointPosition(1, targetVel);
 		vel.SetPointPosition(1, Velocity);	
+		doThing();
 
 		switch (state)
 		{
@@ -120,54 +124,85 @@ public partial class Enemy : CharacterBody2D
 	}
 
 	public void setUpAvWall(){
-
+		 
 	}
 
 	public void AvoidWall(double delta){
-		if(targetRay.GetCollisionPoint().DistanceTo(GlobalPosition) >= 100){
+		if(!targetRay.IsColliding() || targetRay.GetCollisionPoint().DistanceTo(GlobalPosition) >= 100){
 			state = State.TARGET;
 		}
-
-		// Vector2 baseDir = GlobalPosition.DirectionTo(targetRay.TargetPosition).Normalized();
-		// float dist = targetRay.GetCollisionPoint().DistanceTo(GlobalPosition);
-		// Vector2 nDir = GlobalPosition.DirectionTo(targetRay.GetCollisionPoint());
-		// for(int i = 0; i < 90; i+=2){
-		// 	scanner.TargetPosition = baseDir.Rotated(Mathf.DegToRad(-(90/2) + i)) * 200;
-		// 	scanner.ForceRaycastUpdate();
-		// 	Vector2 v = scanner.GetCollisionPoint();
-		// 	float d = v.DistanceSquaredTo(GlobalPosition);
-		// 	if(d > dist){
-		// 		dist = d;
-		// 		nDir = GlobalPosition.DirectionTo(scanner.GetCollisionPoint());
-		// 	}
-		// }
-		// farTar.TargetPosition = nDir.Normalized() * 100;
-		// targetVel = nDir;
 
 		List<Vector2> vecLeft = new List<Vector2>();
 		List<Vector2> vecRight = new List<Vector2>();
 		
 		// scanner.TargetPosition = targetRay.TargetPosition.Rotated(Mathf.DegToRad(-45));
-		for(int i = 0; i < 5; i++){
+		for(int i = 0; i < 7; i++){
 			float cuRot = 22.5f * i;
-			Vector2 vLeft = targetRay.TargetPosition.Normalized().Rotated(Mathf.DegToRad(cuRot));
-			Vector2 vRight = targetRay.TargetPosition.Normalized().Rotated(Mathf.DegToRad(-cuRot));
-
+			Vector2 vLeft = targetRay.TargetPosition.Normalized().Rotated(Mathf.DegToRad(cuRot)) * 100;
+			Vector2 vRight = targetRay.TargetPosition.Normalized().Rotated(Mathf.DegToRad(-cuRot)) * 100;
+  
 			scanner.TargetPosition = vLeft;
+			ls[i].TargetPosition = vLeft;
+
+			Vector2 vecToCol = vLeft;
 			scanner.ForceRaycastUpdate();
-			scanner.GetCollisionPoint();
+			if(scanner.IsColliding()){
+			 	vecToCol = GlobalPosition.DirectionTo(scanner.GetCollisionPoint()) * GlobalPosition.DistanceTo(scanner.GetCollisionPoint());
+			}
+			// GD.Print(vLeft + " "  + vecToCol + " "+ (int) (vecToCol.Length() * 100) / vLeft.Length());
+			ls2[i].TargetPosition = vecToCol;
+			vecLeft.Add(vecToCol);
 
-			
-		
-		
+			vecToCol = vRight;
+			scanner.TargetPosition = vRight;
+			scanner.ForceRaycastUpdate();
+			if(scanner.IsColliding()){
+				vecToCol = GlobalPosition.DirectionTo(scanner.GetCollisionPoint()) * GlobalPosition.DistanceTo(scanner.GetCollisionPoint());
+			}
+			vecRight.Add(vecToCol);
 		}
+		// GD.Print("");
+
+		Vector2 dirLeft = vecLeft.Aggregate<Vector2>((e1, e2) => (e2.Length() > 50) ? e1 + e2 : e1);
+		Vector2 dirRight = vecRight.Aggregate<Vector2>((e1, e2) => (e2.Length() > 50) ? e1 + e2 : e1);
+
+		// Vector2 dirLeft = vecLeft.Aggregate<Vector2>((e1, e2) =>  e1 + e2);
+		// Vector2 dirRight = vecRight.Aggregate<Vector2>((e1, e2) => e1 + e2);
+		// bool leftIsClosestToTargetAngle = (dirLeft.AngleTo(targetVel) > dirRight.AngleTo(targetVel));
+		// Vector2 final = (leftIsClosestToTargetAngle) ? dirLeft : dirRight; 
+
+		// if(Velocity.Angle() == GlobalPosition.DirectionTo(targetRay.TargetPosition).Angle()){
+		// 	GD.Print("dude");
+		Vector2	final = (dirLeft.Length() > dirRight.Length()) ? dirLeft : dirRight;
+		// }
 
 
+		targetVel = final;
 
 		float currentAngle = Velocity.Angle();
 		float targetAngle = targetVel.Angle();
 		float angle = Mathf.LerpAngle(currentAngle, targetAngle, 0.1f);
 		Velocity = Velocity.Rotated(angle - currentAngle);
+	}
+
+	List<RayCast2D> ls = new List<RayCast2D>();
+	List<RayCast2D> ls2 = new List<RayCast2D>();
+	
+
+	public void setUp(List<RayCast2D> l){
+		for(int i = 0; i < 7; i++){
+			RayCast2D r = new RayCast2D();
+			AddChild(r);
+			l.Add(r);
+		}
+	}
+
+	public void doThing(){
+		// for(int i = 0; i < 7; i++){
+		// 	float cuRot = 22.5f * i;
+		// 	Vector2 vLeft = targetRay.TargetPosition.Normalized().Rotated(Mathf.DegToRad(cuRot)) * 90;
+		// 	ls[i].TargetPosition = vLeft;
+		// }
 	}
 
 	public void FollowMouse(double delta){

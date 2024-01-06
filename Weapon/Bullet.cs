@@ -39,6 +39,8 @@ public partial class Bullet : Area2D
 			Enemy e = (Enemy) node;
 			e.damage(10, velocity);
 		}
+
+		QueueFree();
 	}
 
 }
