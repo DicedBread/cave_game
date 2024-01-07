@@ -6,12 +6,10 @@ using System.Linq;
 public partial class Enemy : CharacterBody2D
 {
 	public const float Speed = 100.0f;
+	public const float LookDist = 100.0f;
 	public float health = 100;
 
 	private static PackedScene scene = GD.Load<PackedScene>("res://Enemy/Enemy.tscn");
-
-	private Dictionary<Vector2, float> avoidWall = new Dictionary<Vector2, float>();
-
 	public static Enemy Instantiate(){	
 		return scene.Instantiate<Enemy>();
 	}
@@ -29,9 +27,6 @@ public partial class Enemy : CharacterBody2D
 
 	NavigationAgent2D navAgent;
 	RayCast2D targetRay;
-	// RayCast2D rayRight = new RayCast2D();
-	// RayCast2D rayLeft= new RayCast2D();
-
 
 	enum State {WALKING, IDLE, TARGET, AVOID_WALL, FOLMOUSE}
 	State state = State.TARGET;
@@ -55,6 +50,7 @@ public partial class Enemy : CharacterBody2D
 		sprite.SpriteFrames = (SpriteFrames) GD.Load(sprites[new Random().Next(0, sprites.Length)]);
 		Velocity = new Vector2(0, Speed);
 		
+		setUpWeights();
 		AVReady();
 		setUp(ls);
 		setUp(ls2);
@@ -65,8 +61,6 @@ public partial class Enemy : CharacterBody2D
     public override void _PhysicsProcess(double delta)
 	{	
 		targetRay.TargetPosition = GlobalPosition.DirectionTo(TargetObjectiveLoc) * GlobalPosition.DistanceTo(TargetObjectiveLoc); 
-		
-
 		target.SetPointPosition(1, targetVel);
 		vel.SetPointPosition(1, Velocity);	
 		doThing();
@@ -127,7 +121,7 @@ public partial class Enemy : CharacterBody2D
 		 
 	}
 
-	public void AvoidWall(double delta){
+	public void AvoidWallOld(double delta){
 		if(!targetRay.IsColliding() || targetRay.GetCollisionPoint().DistanceTo(GlobalPosition) >= 100){
 			state = State.TARGET;
 		}
@@ -183,6 +177,58 @@ public partial class Enemy : CharacterBody2D
 		float targetAngle = targetVel.Angle();
 		float angle = Mathf.LerpAngle(currentAngle, targetAngle, 0.1f);
 		Velocity = Velocity.Rotated(angle - currentAngle);
+	}
+
+
+	Dictionary<Vector2, float> weights = new Dictionary<Vector2, float>();
+
+	public void setUpWeights(){
+		float incrementAngle = 360/8;
+		Vector2 baseVec = new Vector2(1, 0);
+		for(int i = 0; i < 8; i++){
+			Vector2 v = baseVec.Rotated(Mathf.RadToDeg(incrementAngle * i)) * LookDist;
+			weights.Add(v, 0);
+		}
+	}
+
+	public void AvoidWall(double delta){
+		if(!targetRay.IsColliding() || targetRay.GetCollisionPoint().DistanceTo(GlobalPosition) >= 100){
+			state = State.TARGET;
+		}
+
+		Vector2 v = setWeights();
+
+		targetVel = v.Normalized() * Speed;
+
+		float currentAngle = Velocity.Angle();
+		float targetAngle = targetVel.Angle();
+		float angle = Mathf.LerpAngle(currentAngle, targetAngle, 0.1f);
+		Velocity = Velocity.Rotated(angle - currentAngle);
+	}
+
+	public Vector2 setWeights(){
+		Vector2 o = weights.Keys.ToList()[0];
+		float highestWeight = weights[o];
+		foreach (Vector2 v in weights.Keys)
+		{
+			float w = weights[v];
+			float angleToTarget = Mathf.RadToDeg(v.Angle() - targetRay.TargetPosition.Angle());
+
+			scanner.TargetPosition = v;
+			scanner.ForceRaycastUpdate();
+			
+			float howCloseIsCol = 1;
+			if(scanner.IsColliding()){
+				howCloseIsCol = scanner.GetCollisionPoint().DistanceTo(GlobalPosition) / 100;
+			}
+
+			float sumWeight = Mathf.Max(howCloseIsCol + angleToTarget - 1, 0);
+			weights[v] = sumWeight;
+			if(sumWeight > highestWeight){
+				o = v;
+			}
+		}
+		return o;
 	}
 
 	List<RayCast2D> ls = new List<RayCast2D>();
